@@ -8,6 +8,9 @@ const cookie = require('cookie-parser')
 const register = async (req,res)=>{
     try{
         const {username, email,password} = req.body
+        if(!email){
+            return  handleresponse(res,400, false, "email fields are required")
+        }
         if(!username || !email || !password){
           return  handleresponse(res,400, false, "All fields are required")
         }
@@ -59,7 +62,6 @@ const login = async (req,res)=>{
     if(!comparepassword){
         return handleresponse(res,400,false,"Incorrect password")
     }
-    console.log(exisitingrecord)
     const token = jwt.sign({
         username:exisitingrecord.username,
         email:exisitingrecord.email,
@@ -70,7 +72,7 @@ const login = async (req,res)=>{
     res.cookie("Blogcookie", token,{
         httpOnly: true,
         secure: false,
-        sameSite: "none" ,
+        // sameSite: "none" ,
       path: '/',
       maxAge: 2 * 24 * 60 * 60 * 1000
     })
